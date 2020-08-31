@@ -1,23 +1,19 @@
 FROM node:12.14.0-alpine3.11
 
-RUN apk add --no-cache bash git
+RUN apk add --no-cache openssl
 
-# ENV DOCKERIZE_VERSION v0.6.1
-# RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION 
-#     && tar -C /user/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION
-#     && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
-RUN mkdir -p /home/node/nest_ci_api
+RUN mkdir -p /home/node/app
 
-WORKDIR /home/node/nest_ci_api
+WORKDIR /home/node/app
 
 COPY . .
+
 RUN npm install
-RUN npm i -g @nestjs/cli ts-node
-RUN npm install @nestjs/typeorm typeorm sqlite3 @nestjs/config @nestjs/swagger swagger-ui-express class-validator class-transformer --save
 
 RUN npm run build
 
-EXPOSE 3000
-
-CMD ["npm", "run", "start:prod"]
+ENTRYPOINT ["npm", "run", "start:prod"]
