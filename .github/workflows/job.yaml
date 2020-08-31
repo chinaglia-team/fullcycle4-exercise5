@@ -5,6 +5,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: docker-compose -f docker-compose.prod.yaml up -d
-      - run: docker exec micro-api-app dockerize -timeout=200s -wait=http://localhost:3000/
-      - run: docker exec micro-api-app npm run test
+      - name: Install dependencies
+        run: npm install
+      - name: unit tests
+        run: npm run test
+      - name: e2e tests
+        run: npm run test:e2e
+      - name: test coverage
+        run: npm run test:cov
